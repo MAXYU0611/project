@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Add necessary meta tags, title, stylesheets, etc. -->
+    <style>
+    body {
+    background-color:cornsilk;
+    }
+
+    
+
+      /* 添加自定义样式 */
+      .table {
+        width: 50%;
+        margin: auto;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    
+    <div class="container mt-3">
+      <h1 class="text-center mt-4 mb-3">段位統計</h1>
+
+      <div class="border p-4 bg-white">
+        <h2>圍棋業餘段位統計</h2>
+        <div class="text-center mb-3">
+            <a href="/" class="btn btn-primary">回首頁</a>
+
+        <div class="row mb-3">
+          <div class="col">
+            <!-- 数据表格 -->
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>段位</th>
+                  <th>人數</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>初段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '初段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>二段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '二段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>三段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '三段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>四段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '四段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>五段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '五段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>六段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '六段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>七段</td>
+                  <td>
+                    {% for stat in statistics %} {% if stat[0] == '七段' %} {{
+                    stat[1] }} {% endif %} {% endfor %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <canvas id="myChart" style="width: 361px; height: 361px"></canvas>
+
+    <script>
+          var ctx = document.getElementById('myChart').getContext('2d');
+          var statistics = {{ statistics | tojson | safe }}; // 获取从 Flask 传递来的统计数据
+
+
+          var orderedLabels = ['初段', '二段', '三段', '四段', '五段', '六段', '七段'];
+      var labels = [];
+      var data = [];
+      var backgroundColor = [];
+
+      orderedLabels.forEach(function(label) {
+        var stat = statistics.find(function(stat) {
+          return stat[0] === label;
+        });
+
+        if (stat) {
+          labels.push(stat[0]);
+          data.push(stat[1]);
+          backgroundColor.push(getRandomColor());
+        }
+      });
+
+          var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: '段位統計',
+                data: data,
+                backgroundColor: backgroundColor,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  position: 'top', // 調整圖表位置
+                  labels: {
+                    font: {
+                      size: 10 // 調整文字大小
+                    }
+                  }
+                }
+              },
+              aspectRatio: 1, // 設置寬高比例為1:1
+              responsive: false // 禁用響應式
+            }
+          });
+
+          // 生成随机颜色函数
+          function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+              color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+          }
+    </script>
+
+  </body>
+</html>
